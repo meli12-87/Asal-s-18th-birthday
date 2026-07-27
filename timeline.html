@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timeline · Asal 18</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .timeline{
+    position:relative; max-width: 760px; margin-top: 50px;
+    padding-left: 40px;
+  }
+  .timeline::before{
+    content:''; position:absolute; left:6px; top:6px; bottom:6px; width:1.5px;
+    background: linear-gradient(180deg, var(--forest), var(--gold), var(--wine));
+  }
+  .t-item{ position:relative; padding-bottom: 54px; }
+  .t-item:last-child{ padding-bottom:0; }
+  .t-dot{
+    position:absolute; left:-40px; top:4px; width:13px; height:13px; border-radius:50%;
+    background: var(--gold); box-shadow: 0 0 0 5px rgba(207,167,95,.15);
+  }
+  .t-year{
+    font-family:'Cormorant Garamond', serif; font-size:2.2rem; color: var(--gold); line-height:1;
+  }
+  .t-text{ margin-top:10px; font-size:.98rem; line-height:1.75; opacity:.85; max-width:560px; }
+  .t-final .t-year{ color: var(--white); }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="brand">asal<span>.</span>18</div>
+  <button class="nav-toggle">☰</button>
+  <div class="nav-links">
+    <a href="home.html">Home</a>
+    <a href="playlist.html">Playlist</a>
+    <a href="moodboard.html">Mood Board</a>
+    <a href="letter.html">Letter</a>
+    <a href="distance.html">Distance</a>
+    <a href="timeline.html" class="active">Timeline</a>
+  </div>
+</nav>
+
+<main>
+  <span class="eyebrow reveal">05 — Six years, mapped out</span>
+  <h1 class="section-title reveal">2020 → 2026</h1>
+  <p class="section-sub reveal">It's strange to look at it laid out like this. Six years, start to now.</p>
+
+  <div class="timeline">
+    <div class="t-item reveal">
+      <div class="t-dot"></div>
+      <div class="t-year">2020</div>
+      <div class="t-text">A fan page, started in the middle of quarantine — and somehow, that's where I met you. I didn't think we'd end up here.</div>
+    </div>
+    <div class="t-item reveal">
+      <div class="t-dot"></div>
+      <div class="t-year">2021–2022</div>
+      <div class="t-text">Getting to know you slowly, then all at once. We moved to Telegram and got closer — I watched your life update, story by story, and stayed for all of it.</div>
+    </div>
+    <div class="t-item reveal">
+      <div class="t-dot"></div>
+      <div class="t-year">2023</div>
+      <div class="t-text">We went live together for the first time — my first ever livestream. Somewhere around here you became one of the most important people in my life.</div>
+    </div>
+    <div class="t-item reveal">
+      <div class="t-dot"></div>
+      <div class="t-year">2024–2025</div>
+      <div class="t-text">More years, more messages, more of us — the ordinary, everyday kind of closeness that quietly became the most important thing.</div>
+    </div>
+    <div class="t-item t-final reveal">
+      <div class="t-dot"></div>
+      <div class="t-year">2026</div>
+      <div class="t-text">Six years since it started. You just turned 18. Legally an adult now — I'm still not letting go.</div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">made with love, for asal — 05/05</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playlist · Asal 18</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .player{
+    margin-top: 44px;
+    border:1px solid var(--line);
+    border-radius: 22px;
+    background: linear-gradient(160deg, rgba(18,82,35,.18), rgba(82,18,29,.18));
+    padding: 30px clamp(18px, 3vw, 40px);
+    max-width: 780px;
+  }
+  .now-playing{
+    display:flex; align-items:center; gap:20px; margin-bottom: 22px;
+    padding-bottom: 22px; border-bottom: 1px solid var(--line);
+  }
+  .disc{
+    width:64px; height:64px; border-radius:50%;
+    background: conic-gradient(var(--forest), var(--wine), var(--forest));
+    flex-shrink:0;
+    animation: spin 6s linear infinite paused;
+    position:relative;
+  }
+  .disc::after{
+    content:''; position:absolute; inset:26%; border-radius:50%; background: var(--black);
+  }
+  .disc.spinning{ animation-play-state: running; }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+  .np-title{ font-family:'Cormorant Garamond', serif; font-size:1.4rem; }
+  .np-artist{ font-size:.85rem; opacity:.6; margin-top:4px; }
+
+  .controls{ display:flex; align-items:center; gap:18px; margin-bottom: 18px; }
+  .ctrl-btn{
+    background:none; border:1px solid var(--line); color:var(--cream);
+    width:44px; height:44px; border-radius:50%; cursor:pointer; font-size:1rem;
+    display:flex; align-items:center; justify-content:center;
+    transition: all .3s var(--ease);
+  }
+  .ctrl-btn:hover{ border-color: var(--gold); color: var(--gold); }
+  .ctrl-btn.play{ width:54px; height:54px; background: linear-gradient(120deg, var(--forest), var(--wine)); border-color:transparent; font-size:1.2rem; }
+
+  .progress-row{ display:flex; align-items:center; gap:12px; flex:1; font-size:.75rem; opacity:.7; }
+  .progress-bar{
+    flex:1; height:4px; border-radius:2px; background: rgba(255,255,255,.12);
+    position:relative; cursor:pointer;
+  }
+  .progress-fill{
+    position:absolute; left:0; top:0; bottom:0; width:0%; border-radius:2px;
+    background: linear-gradient(90deg, var(--gold), var(--wine));
+  }
+
+  .track-list{ list-style:none; margin-top:10px; max-height: 420px; overflow-y:auto; }
+  .track-list li{
+    display:flex; align-items:center; gap:16px;
+    padding: 13px 10px; border-radius:10px; cursor:pointer;
+    transition: background .3s var(--ease);
+  }
+  .track-list li:hover{ background: rgba(255,255,255,.04); }
+  .track-list li.active{ background: rgba(207,167,95,.12); }
+  .track-list .idx{ width:22px; font-size:.8rem; opacity:.5; font-family:'Cormorant Garamond',serif; }
+  .track-list .t-title{ font-size:.95rem; }
+  .track-list .t-artist{ font-size:.78rem; opacity:.55; }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="brand">asal<span>.</span>18</div>
+  <button class="nav-toggle">☰</button>
+  <div class="nav-links">
+    <a href="home.html">Home</a>
+    <a href="playlist.html" class="active">Playlist</a>
+    <a href="moodboard.html">Mood Board</a>
+    <a href="letter.html">Letter</a>
+    <a href="distance.html">Distance</a>
+    <a href="timeline.html">Timeline</a>
+  </div>
+</nav>
+
+<main>
+  <span class="eyebrow reveal">01 — For your ears</span>
+  <h1 class="section-title reveal">18 songs.<br>One for every year.</h1>
+  <p class="section-sub reveal">I put these together thinking of you the whole time. Press play and let it run.</p>
+
+  <div class="player reveal">
+    <div class="now-playing">
+      <div class="disc" id="disc"></div>
+      <div>
+        <div class="np-title" id="npTitle">Select a song</div>
+        <div class="np-artist" id="npArtist">—</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="ctrl-btn" id="prevBtn" title="Previous">⏮</button>
+      <button class="ctrl-btn play" id="playBtn" title="Play/Pause">▶</button>
+      <button class="ctrl-btn" id="nextBtn" title="Next">⏭</button>
+      <div class="progress-row">
+        <span id="curTime">0:00</span>
+        <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+        <span id="durTime">0:00</span>
+      </div>
+    </div>
+
+    <ul class="track-list" id="trackList"></ul>
+  </div>
+
+  <audio id="audio"></audio>
+</main>
+
+<footer class="site-footer">made with love, for asal — 05/05</footer>
+
+<script src="js/playlist-data.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const audio = document.getElementById('audio');
+  const trackList = document.getElementById('trackList');
+  const playBtn = document.getElementById('playBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const disc = document.getElementById('disc');
+  const npTitle = document.getElementById('npTitle');
+  const npArtist = document.getElementById('npArtist');
+  const progressBar = document.getElementById('progressBar');
+  const progressFill = document.getElementById('progressFill');
+  const curTime = document.getElementById('curTime');
+  const durTime = document.getElementById('durTime');
+
+  let currentIndex = -1;
+
+  function fmt(t){
+    if(isNaN(t)) return '0:00';
+    const m = Math.floor(t/60), s = Math.floor(t%60);
+    return m + ':' + String(s).padStart(2,'0');
+  }
+
+  function renderList(){
+    trackList.innerHTML = '';
+    PLAYLIST.forEach((track, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="idx">${String(i+1).padStart(2,'0')}</span>
+        <div><div class="t-title">${track.title}</div><div class="t-artist">${track.artist}</div></div>`;
+      li.addEventListener('click', () => loadTrack(i, true));
+      trackList.appendChild(li);
+    });
+  }
+
+  function loadTrack(i, autoplay){
+    currentIndex = (i + PLAYLIST.length) % PLAYLIST.length;
+    const track = PLAYLIST[currentIndex];
+    audio.src = 'songs/' + track.file;
+    npTitle.textContent = track.title;
+    npArtist.textContent = track.artist;
+    [...trackList.children].forEach((li, idx) => li.classList.toggle('active', idx === currentIndex));
+    if(autoplay){
+      audio.play().catch(()=>{});
+    }
+  }
+
+  function togglePlay(){
+    if(currentIndex === -1) loadTrack(0, false);
+    if(audio.paused){ audio.play().catch(()=>{}); } else { audio.pause(); }
+  }
+
+  audio.addEventListener('play', () => { playBtn.textContent = '❚❚'; disc.classList.add('spinning'); });
+  audio.addEventListener('pause', () => { playBtn.textContent = '▶'; disc.classList.remove('spinning'); });
+  audio.addEventListener('ended', () => loadTrack(currentIndex + 1, true));
+  audio.addEventListener('timeupdate', () => {
+    progressFill.style.width = (audio.currentTime / (audio.duration || 1) * 100) + '%';
+    curTime.textContent = fmt(audio.currentTime);
+  });
+  audio.addEventListener('loadedmetadata', () => { durTime.textContent = fmt(audio.duration); });
+
+  playBtn.addEventListener('click', togglePlay);
+  prevBtn.addEventListener('click', () => loadTrack(currentIndex - 1, true));
+  nextBtn.addEventListener('click', () => loadTrack(currentIndex + 1, true));
+  progressBar.addEventListener('click', (e) => {
+    const rect = progressBar.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    audio.currentTime = pct * (audio.duration || 0);
+  });
+
+  renderList();
+</script>
+</body>
+</html>

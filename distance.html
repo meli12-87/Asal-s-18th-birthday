@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Distance · Asal 18</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .map-wrap{
+    position:relative; max-width: 640px; margin: 50px auto 0;
+    border: 1px solid var(--line); border-radius: 22px;
+    padding: 34px;
+    background: linear-gradient(165deg, rgba(18,82,35,.18), rgba(82,18,29,.18));
+  }
+  .map-frame{ position:relative; width:100%; aspect-ratio: 1210 / 1100; }
+  .map-frame img{
+    width:100%; height:100%; object-fit:contain;
+    filter: invert(1) brightness(0.92) sepia(.25) hue-rotate(60deg) saturate(1.4);
+    opacity:.9;
+  }
+  .pin{
+    position:absolute; transform: translate(-50%,-100%);
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .pin .dot{
+    width:12px; height:12px; border-radius:50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 6px rgba(207,167,95,.18), 0 0 18px rgba(207,167,95,.7);
+  }
+  .pin .label{
+    margin-top:8px; font-family:'Cormorant Garamond', serif; font-size:1.05rem;
+    white-space:nowrap; background: rgba(10,10,10,.7); padding:3px 10px; border-radius:8px;
+    border: 1px solid var(--line);
+  }
+  .connector{ position:absolute; inset:0; pointer-events:none; }
+  .connector path{
+    fill:none; stroke: var(--gold); stroke-width:1.6; stroke-dasharray: 6 6;
+    opacity:.85;
+    stroke-dashoffset: 1000;
+    stroke-dasharray: 1000;
+    animation: draw 3s var(--ease) forwards .6s;
+  }
+  @keyframes draw{ to{ stroke-dashoffset: 0; } }
+  .heart{
+    position:absolute; font-size:1.1rem;
+    animation: floaty 3s ease-in-out infinite;
+  }
+  @keyframes floaty{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-6px); } }
+
+  .distance-stat{
+    text-align:center; margin-top: 26px;
+    font-family:'Cormorant Garamond', serif; font-size:1.3rem; color: var(--gold);
+  }
+  .distance-note{ text-align:center; font-size:.82rem; opacity:.6; margin-top:6px; }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="brand">asal<span>.</span>18</div>
+  <button class="nav-toggle">☰</button>
+  <div class="nav-links">
+    <a href="home.html">Home</a>
+    <a href="playlist.html">Playlist</a>
+    <a href="moodboard.html">Mood Board</a>
+    <a href="letter.html">Letter</a>
+    <a href="distance.html" class="active">Distance</a>
+    <a href="timeline.html">Timeline</a>
+  </div>
+</nav>
+
+<main>
+  <span class="eyebrow reveal">04 — Ahvaz to Najafabad</span>
+  <h1 class="section-title reveal">Long distance,<br>close anyway.</h1>
+  <p class="section-sub reveal">Two cities, one map, and six years of showing up for each other across it.</p>
+
+  <div class="map-wrap reveal">
+    <div class="map-frame" id="mapFrame">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Blank_map_of_Iran.svg" alt="Map of Iran" id="iranMap" onerror="this.style.display='none'; document.getElementById('mapFallback').style.display='flex';">
+      <div id="mapFallback" style="display:none; position:absolute; inset:0; align-items:center; justify-content:center; text-align:center; opacity:.6; font-size:.85rem; padding:20px;">
+        Map image couldn't load — connect to the internet to see it, the pins still work.
+      </div>
+
+      <svg class="connector" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="M 24.2 57.5 Q 31 45 38.2 48.5" vector-effect="non-scaling-stroke"/>
+      </svg>
+
+      <div class="pin" style="left:24.2%; top:57.5%;">
+        <div class="label">Ahvaz</div>
+        <div class="dot"></div>
+      </div>
+      <div class="pin" style="left:38.2%; top:48.5%;">
+        <div class="label">Najafabad</div>
+        <div class="dot"></div>
+      </div>
+      <div class="heart" style="left:30%; top:44%;">🤍</div>
+    </div>
+  </div>
+
+  <p class="distance-stat reveal">≈ 290 km apart, in a straight line.</p>
+  <p class="distance-note reveal">Never once felt that far.</p>
+</main>
+
+<footer class="site-footer">made with love, for asal — 05/05</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

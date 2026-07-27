@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mood Board · Asal 18</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  main.mb-main{ padding-top: 150px; }
+  .collage{
+    column-count: 5;
+    column-gap: 6px;
+    margin-top: 40px;
+  }
+  @media (max-width: 1100px){ .collage{ column-count: 4; } }
+  @media (max-width: 800px){ .collage{ column-count: 3; } }
+  @media (max-width: 520px){ .collage{ column-count: 2; column-gap: 4px; } }
+
+  .collage figure{
+    margin: 0 0 10px;
+    break-inside: avoid;
+    overflow:hidden;
+    border-radius: 4px;
+    position:relative;
+    transition: transform .4s var(--ease);
+  }
+  .collage figure:hover{
+    transform: scale(1.04) rotate(0deg) !important;
+    z-index: 5;
+  }
+  .collage img{
+    width:100%; height:auto; display:block;
+    filter: saturate(.92) contrast(1.02);
+    transition: filter .6s var(--ease);
+    opacity:0;
+    animation: fadeInPhoto .8s var(--ease) forwards;
+  }
+  @keyframes fadeInPhoto{ to{ opacity:1; } }
+  .collage figure:hover img{
+    filter: saturate(1.05) contrast(1.05);
+  }
+  .collage figure::after{
+    content:'';
+    position:absolute; inset:0;
+    background: linear-gradient(200deg, rgba(18,82,35,.16), rgba(82,18,29,.16));
+    pointer-events:none;
+    mix-blend-mode: multiply;
+  }
+  .mb-empty{
+    margin-top: 60px; padding: 40px; border:1px dashed var(--line); border-radius:16px;
+    text-align:center; opacity:.7; font-size:.9rem; line-height:1.7;
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="brand">asal<span>.</span>18</div>
+  <button class="nav-toggle">☰</button>
+  <div class="nav-links">
+    <a href="home.html">Home</a>
+    <a href="playlist.html">Playlist</a>
+    <a href="moodboard.html" class="active">Mood Board</a>
+    <a href="letter.html">Letter</a>
+    <a href="distance.html">Distance</a>
+    <a href="timeline.html">Timeline</a>
+  </div>
+</nav>
+
+<main class="mb-main">
+  <span class="eyebrow reveal">02 — Ninety pieces of us</span>
+  <h1 class="section-title reveal">A wall of everything<br>that reminds me of you.</h1>
+  <p class="section-sub reveal">No captions. They don't need any.</p>
+
+  <div class="collage" id="collage"></div>
+  <div class="mb-empty" id="emptyNotice" style="display:none;">
+    Drop your photos into the <strong>/photos</strong> folder named <strong>1.jpg</strong> through <strong>90.jpg</strong> and they'll appear here automatically.
+  </div>
+</main>
+
+<footer class="site-footer">made with love, for asal — 05/05</footer>
+
+<script src="js/main.js"></script>
+<script>
+  const collage = document.getElementById('collage');
+  const TOTAL = 90;
+  let failedCount = 0;
+
+  // Shuffle the photo numbers so the layout feels scattered, not sequential
+  const order = Array.from({length: TOTAL}, (_, i) => i + 1);
+  for(let i = order.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+
+  order.forEach((n, idx) => {
+    const fig = document.createElement('figure');
+    const tilt = (Math.random() * 5 - 2.5).toFixed(2); // -2.5deg to 2.5deg
+    fig.style.transform = `rotate(${tilt}deg)`;
+    const img = document.createElement('img');
+    img.src = `photos/${n}.jpg`;
+    img.alt = '';
+    img.loading = 'lazy';
+    img.style.animationDelay = (Math.random() * 0.6).toFixed(2) + 's';
+    img.addEventListener('error', () => {
+      failedCount++;
+      fig.remove();
+      if(failedCount === TOTAL) document.getElementById('emptyNotice').style.display = 'block';
+    });
+    fig.appendChild(img);
+    collage.appendChild(fig);
+  });
+</script>
+</body>
+</html>
